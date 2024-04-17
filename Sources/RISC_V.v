@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module RISC_V(clk, rst,inst, resultW);
+module RISC_V(clk, rst, resultW);
             
 clk_wiz_0 instance_name
    (
@@ -16,7 +16,7 @@ clk_wiz_0 instance_name
     assign reset = rst;
     
     input clk, rst;
-    input[31:0] inst;
+            // input[31:0] inst; // user's input instruction.
 //    wire RegwriteE, MemwriteE, alusrcE,
 //                RegwriteM, MemwriteM,
 //                RegwriteW;
@@ -46,7 +46,7 @@ clk_wiz_0 instance_name
     
     RISC_DATAPATH DATAPATH(clk, rst, pcsrc, MemwriteD, 
                      AluControlSrcD, alusrcD, ImmsrcD, RegwriteD,
-                     ALU_branch, op, funct3, funct7,inst,
+                     ALU_branch, op, funct3, funct7,
                      //only for output
                     resultW,LoadSrcD, ResultSrcD,
                     pcsrc, StoreSrcD);
