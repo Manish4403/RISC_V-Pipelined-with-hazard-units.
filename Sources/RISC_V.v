@@ -2,18 +2,7 @@
 
 module RISC_V(clk, rst, resultW);
             
-clk_wiz_0 instance_name
-   (
-    // Clock out ports
-    .clk(clk_out),     // output clk
-    // Status and control signals
-    .reset(reset), // input reset
-    .locked(locked),       // output locked
-   // Clock in ports
-    .clk_in1(clk_in1)      // input clk_in1
-);
-    assign clk_in1 = clk;
-    assign reset = rst;
+
     
     input clk, rst;
             // input[31:0] inst; // user's input instruction.
@@ -52,7 +41,7 @@ clk_wiz_0 instance_name
                     pcsrc, StoreSrcD);
 
     
-    Controller Contro_Unit(.clk(clk_out), .rst(rst), .op(op), .funct3(funct3), .funct7(funct7), .branch(ALU_branch), .pcsrc(pcsrc), .resultsrc(ResultSrcD), 
+    Controller Contro_Unit(.clk(clk), .rst(rst), .op(op), .funct3(funct3), .funct7(funct7), .branch(ALU_branch), .pcsrc(pcsrc), .resultsrc(ResultSrcD), 
                         .memwrite(MemwriteD), .alucontrol(AluControlSrcD), .alusrc(alusrcD),
                          .immsrc(ImmsrcD), .regwrite(RegwriteD), .load_src(LoadSrcD), .store_src(StoreSrcD));
     
