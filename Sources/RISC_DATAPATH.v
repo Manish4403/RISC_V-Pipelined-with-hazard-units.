@@ -2,7 +2,7 @@
 
 module RISC_DATAPATH(clk, rst, pcsrc, MemwriteD, 
                      AluControlSrcD, alusrcD, ImmsrcD, RegwriteD,
-                     ALU_branch, op, funct3, funct7,inst,
+                     ALU_branch, op, funct3, funct7,
                      //only for output
                     resultW,LoadSrcD, ResultSrcD,
                     pcsrc, StoreSrcD);
@@ -11,7 +11,7 @@ output [2:0] funct3;
 output ALU_branch, funct7;
 
 input clk, rst;
-input [31:0] inst;
+// input [31:0] inst;
 input [2:0]  LoadSrcD, ResultSrcD;
 input [1:0] pcsrc, StoreSrcD;
 
@@ -68,7 +68,7 @@ register PC_register(.data(pc_next), .clk(clk), .rst(rst), .out(PCF), .en(StallF
 
 
 //Instruction memory
-InstMemory InstMemory(.A(PCF), .RD(InstrF), .inst(inst));
+InstMemory InstMemory(.A(PCF), .RD(InstrF));
 
 //PC + 4 adder
 adder PC_plus4_adder(.in1(PCF),  .in2(32'd4), .result(PCPlus4F));
