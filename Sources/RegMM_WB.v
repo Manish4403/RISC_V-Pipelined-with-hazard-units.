@@ -1,50 +1,70 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 04.04.2024 21:59:34
+// Design Name: 
+// Module Name: RegEX_MM
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
 
-
-module RegMM_WB(clk, rst,regwriteM,rdM,aluresultM, readDataM, auipcM,
-                 immextM, pcplus4M,resultsrcM, loadsrcM,
+module RegEX_MM(clk, rst,regwriteE, memwriteE,rdE,aluresultE, writeDataE, auipcE,
+                 immextE, pcplus4E,resultsrcE, loadsrcE, 
                  //output
-                 regwriteW,rdW,aluresultW, readDataW, auipcW,
-                 immextW, pcplus4W,resultsrcW, loadsrcW
+                 regwriteM, memwriteM,rdM,aluresultM, writeDataM, auipcM,
+                 immextM, pcplus4M,resultsrcM, loadsrcM
                  );
-    input clk, rst; 
+    input clk, rst;
+    input regwriteE, memwriteE;
+    input signed [2:0] resultsrcE, loadsrcE;
+    input signed [4:0] rdE;
+    input signed [31:0] aluresultE, writeDataE, auipcE,
+                 immextE, pcplus4E; 
     
-    input regwriteM;
-    input [2:0] resultsrcM, loadsrcM;
-    input [4:0] rdM;
-    input [31:0] aluresultM, readDataM, auipcM,
+    output reg regwriteM, memwriteM;
+    output reg signed [2:0] resultsrcM, loadsrcM;
+    output reg signed [4:0] rdM;
+    output reg signed [31:0] aluresultM, writeDataM, auipcM,
                  immextM, pcplus4M;
-    
-    output reg regwriteW;
-    output reg [2:0] resultsrcW, loadsrcW;
-    output reg [4:0] rdW;
-    output reg [31:0] aluresultW, readDataW, auipcW,
-                 immextW, pcplus4W;
-    
-    always@(posedge clk) begin
+                 
+     always@(posedge clk) begin
         if(rst) begin
-            regwriteW <= 1'b0;
-            rdW <= 5'b0;
-            aluresultW  <= 32'b0;
-            readDataW  <= 32'b0;
-            auipcW <= 32'b0;
-            immextW <= 32'b0;
-            pcplus4W <= 32'b0;
-            resultsrcW <= 32'b0;
-            loadsrcW <= 3'b0;
+            regwriteM <= 1'b0;
+            memwriteM <= 1'b0;
+            rdM <= 5'b0;
+            aluresultM  <= 32'b0;
+            writeDataM  <= 32'b0;
+            auipcM <= 32'b0;
+            immextM <= 32'b0;
+            pcplus4M <= 32'b0;
+            resultsrcM <= 32'b0;
+            loadsrcM <= 3'b0;
         end
         else begin
-            regwriteW <= regwriteM;
-            rdW <= rdM;
-            aluresultW  <= aluresultM;
-            readDataW  <= readDataM;
-            auipcW <= auipcM;
-            immextW <= immextM;
-            pcplus4W <= pcplus4M;
-            resultsrcW <= resultsrcM;
-            loadsrcW <= loadsrcM;
+            regwriteM <= regwriteE;
+            memwriteM <= memwriteE;
+            rdM <= rdE;
+            aluresultM  <= aluresultE;
+            writeDataM  <= writeDataE;
+            auipcM <= auipcE;
+            immextM <= immextE;
+            pcplus4M <= pcplus4E;
+            resultsrcM <= resultsrcE;
+            loadsrcM <= loadsrcE;
         end
-    end
-               
+            
+     end    
+                 
 endmodule
