@@ -2,29 +2,33 @@
 
 module RISC_DATAPATH(clk, rst, pcsrc, MemwriteD, 
                      AluControlSrcD, alusrcD, ImmsrcD, RegwriteD,
-                     ALU_branch, op, funct3, funct7,
+                     ALU_branch, op, funct3, funct7,jalD, jalrD, loadD, 
+                     storeD,
                      //only for output
-                    resultW,LoadSrcD, ResultSrcD,
-                    pcsrc, StoreSrcD);
+                    LoadSrcD, ResultSrcD,
+                    pcsrc, StoreSrcD, jalE, jalrE, 
+                    loadE, storeE
+                    );
 output [6:0]op;
-output [2:0] funct3;
+output signed [2:0] funct3;
 output ALU_branch, funct7;
+output jalE, jalrE, loadE, storeE;
 
 input clk, rst;
-// input [31:0] inst;
-input [2:0]  LoadSrcD, ResultSrcD;
-input [1:0] pcsrc, StoreSrcD;
+input signed [2:0]  LoadSrcD, ResultSrcD;
+input signed [1:0] pcsrc, StoreSrcD;
 
-input [2:0]  ImmsrcD;
-input [3:0] AluControlSrcD;
-input RegwriteD, MemwriteD, alusrcD;
+input jalD, jalrD, loadD, storeD;
+input signed [2:0]  ImmsrcD;
+input signed [3:0] AluControlSrcD;
+input RegwriteD, MemwriteD, alusrcD; 
  
 
 //External wires to see output.
-wire [31:0] resultWD_mux;
-output wire [31:0] resultW;
-wire[31:0] mem_loc, reg_loc;
-wire [31:0] srcA, srcB;
+wire signed [31:0] resultWD_mux, result_load_reg;
+wire signed [31:0] resultW;
+wire signed [31:0] mem_loc, reg_loc;
+wire signed [31:0] srcA, srcB;
             
 
      //Hazard unit wires
@@ -36,20 +40,19 @@ wire RegwriteE, MemwriteE, alusrcE,
      RegwriteM, MemwriteM,
      RegwriteW;
    
-wire [2:0] ResultSrcE, LoadSrcE,
+wire signed [2:0] ResultSrcE, LoadSrcE,
            ResultSrcM, LoadSrcM,
            ResultSrcW, LoadSrcW;
            
-wire [1:0]  StoreSrcE;
-wire [3:0]  AluControlSrcE;
+wire signed [1:0]  StoreSrcE;
+wire signed [3:0]  AluControlSrcE;
             
 //Datapath wires (Pipeline)
-wire [4:0]  Rs1D, Rs2D, RdD, 
-            Rs1E, Rs2E, RdE,
+wire signed [4:0]  Rs1E, Rs2E, RdE,
             RdM,
             RdW;
             
-wire [31:0] PCF, PCPlus4F, InstrF,
+wire signed [31:0] PCF, PCPlus4F, InstrF,
             PCD, InstrD, PCPlus4D, ImmextD, RD1D, RD2D,
             PCE, PCPlus4E, ImmextE, RD1E, RD2E, AluResultE, WriteDataMuxE, auipcE,srcBE,
             PCPlus4M, ImmextM, auipcM, WriteDataMuxM, AluResultM, ReadDataM,
@@ -78,7 +81,7 @@ RegIF_ID RegIF_ID(.instrF(InstrF), .PCF(PCF), .PCplus4F(PCPlus4F), .clk(clk), .r
                          .instrD(InstrD), .PCD(PCD), .PCPlus4D(PCPlus4D));
 
 //Register File
-RegisterFile RegisterFile(.A1(InstrD[19:15]), .A2(InstrD[24:20]), .A3(InstrD[11:7]), 
+RegisterFile RegisterFile(.A1(InstrD[19:15]), .A2(InstrD[24:20]), .A3(RdW), 
                           .WD3(resultW), .clk(clk), .WE3(RegwriteW), .RD1(RD1D), .RD2(RD2D),
                           .rst(rst), .RD3(reg_loc));
                           
@@ -86,15 +89,19 @@ RegisterFile RegisterFile(.A1(InstrD[19:15]), .A2(InstrD[24:20]), .A3(InstrD[11:
 Extend Extend(.ImmSrc(ImmsrcD), .ImmExt(ImmextD), .data(InstrD[31:7]));
 
 //ID and EX Register
+
 RegID_EX RegID_EX(
 //output
 .RegwriteE(RegwriteE), .MemwriteE(MemwriteE), .alusrcE(alusrcE), .resultsrcE(ResultSrcE), .load_srcE(LoadSrcE),
 .store_srcE(StoreSrcE), .alucontrolE(AluControlSrcE), .Rd1E(RD1E), .Rd2E(RD2E), .ImmextE(ImmextE), 
-.Pcplus4E(PCPlus4E), .PcE(PCE), .Rs1E(Rs1E), .Rs2E(Rs2E), .RdE(RdE), .clk(clk), .clr(FlushE), .rst(rst),
+.Pcplus4E(PCPlus4E), .PcE(PCE), .Rs1E(Rs1E), .Rs2E(Rs2E), .RdE(RdE), .clk(clk), .clr(FlushE), .rst(rst), .jalE(jalE), .jalrE(jalrE), .loadE(loadE), 
+.storeE(storeE),
 //input
+
 .RegwriteD(RegwriteD), .MemwriteD(MemwriteD), .alusrcD(alusrcD), .resultsrcD(ResultSrcD), .load_srcD(LoadSrcD),
 .store_srcD(StoreSrcD), .alucontrolD(AluControlSrcD), .Rd1D(RD1D), .Rd2D(RD2D), .ImmextD(ImmextD), .Pcplus4D(PCPlus4D), 
-.PcD(PCD), .Rs1D(Rs1D), .Rs2D(Rs2D), .RdD(RdD)
+.PcD(PCD), .Rs1D(InstrD[19:15]), .Rs2D(InstrD[24:20]), .RdD(InstrD[11:7]), .jalD(jalD), .jalrD(jalrD), .loadD(loadD), 
+.storeD(storeD)
 );
 
 //Mux for harzard rs1
@@ -129,7 +136,7 @@ RegEX_MM RegEX_MM(.clk(clk), .rst(rst), .regwriteE(RegwriteE), .memwriteE(Memwri
                  ); 
 
 //Data Memory
-DataMem DataMem(.WD(WriteDataMuxM), .A({AluResultM[13:2], 2'd0}), .clk(clk), .WE(MemwriteM), .RD(ReadDataM), .RD1(mem_loc));
+DataMem DataMem(.WD(WriteDataMuxM), .A(AluResultM[13:0]), .clk(clk), .WE(MemwriteM), .RD(ReadDataM), .RD1(mem_loc));
 
 //MM and WB Register
 RegMM_WB RegMM_WB(.clk(clk), .rst(rst), .regwriteM(RegwriteM), .rdM(RdM), .aluresultM(AluResultM), .readDataM(ReadDataM), 
@@ -144,24 +151,27 @@ RegMM_WB RegMM_WB(.clk(clk), .rst(rst), .regwriteM(RegwriteM), .rdM(RdM), .alure
 mux8to1 Load_mux(.in0(ReadDataW),.in1({{24{ReadDataW[7]}}, ReadDataW[7:0]}), .in2({{16{ReadDataW[15]}}, ReadDataW[15:0]}), 
                  .in3({24'd0, ReadDataW[7:0]}), .in4({16'd0, ReadDataW[15:0]}), 
                   .in5(32'b0), .in6(32'b0), .in7(32'b0),.result(resultWD_mux), .sel(LoadSrcW));
+                  
+//// Load register with en.
+register Load_register(.data(resultWD_mux), .clk(clk),.rst(rst), .out(result_load_reg), .en(1'b0));
 
 //Result MUX
-mux8to1_result Result_mux(.in0(AluResultW), .in1(resultWD_mux), .in2(PCPlus4W), .in3(ImmextW), 
+mux8to1_result Result_mux(.in0(AluResultW), .in1(result_load_reg), .in2(PCPlus4W), .in3(ImmextW), 
                .in4(auipcW), .in5(32'b0), .in6(32'b0), .in7(32'b0), .sel(ResultSrcW), .result(resultW));
                
 //Hazard Unit
 Hazard_unit Hazard_unit(.RegwriteM(RegwriteM), .RegwriteW(RegwriteW), .Rs1E(Rs1E), .Rs2E(Rs2E), .RdM(RdM),
                    .forwardAE(ForwardAE), .forwardBE(ForwardBE), .resultsrcE(ResultSrcE), .stallF(StallF),
-                   .stallD(StallD), .flushE(FlushE), .flushD(FlushD), .pcsrcE(pcsrc), .Rs1D(Rs1D), .Rs2D(Rs2D),
-                   .RdW(RdW), .RdE(RdE));
+                   .stallD(StallD), .flushE(FlushE), .flushD(FlushD), .pcsrcE(pcsrc), .Rs1D(InstrD[19:15]), .Rs2D(InstrD[24:20]),
+                   .RdW(RdW), .RdE(RdE), .Branch(ALU_branch), .jalD(jalD));
 
 
                      
 assign op = InstrD[6:0];
 assign funct3 = InstrD[14:12];
 assign funct7 = InstrD[30];
-assign Rs1D = InstrD[19:15];
-assign Rs2D = InstrD[24:20];
-assign RdD = InstrD[11:7];
+//assign Rs1D = InstrD[19:15];
+//assign Rs2D = InstrD[24:20];
+//assign RdD = InstrD[11:7];
 
 endmodule
