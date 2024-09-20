@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 
 module register(data, clk,rst, out, en);
-    input [31:0] data;
+    input signed [31:0] data;
     input clk, rst, en;
-    output reg [31:0] out;
+    output reg signed  [31:0] out;
     reg [31:0] out_next;
     
     always @(posedge clk)begin
