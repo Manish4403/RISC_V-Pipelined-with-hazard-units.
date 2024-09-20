@@ -4,8 +4,8 @@
 
 module Hazard_unit(RegwriteM, RegwriteW,Rs1E, Rs2E, RdM, Rs1D, Rs2D,
                    RdW, RdE, forwardAE, forwardBE, resultsrcE, stallF,
-                   stallD, flushE, flushD, pcsrcE);
-    input RegwriteM, RegwriteW;
+                   stallD, flushE, flushD, pcsrcE, Branch, jalD);
+    input RegwriteM, RegwriteW, Branch, jalD;
     input [4:0] Rs1E, Rs2E, RdM, Rs1D, Rs2D, RdW, RdE;
     input [1:0] pcsrcE;
     input [2:0] resultsrcE;
@@ -36,10 +36,10 @@ module Hazard_unit(RegwriteM, RegwriteW,Rs1E, Rs2E, RdM, Rs1D, Rs2D,
     assign lwstall = (resultsrcE == 3'b001) & ((Rs1D == RdE) | (Rs2D == RdE));
     assign stallF = lwstall;
     assign stallD = lwstall;
-    assign flushE = lwstall | (pcsrcE != 2'b00);
-    
+    assign flushE = Branch; // For j type i don't need to flush the ID_EXreg.
+
     //control Hazard
-    assign flushD = (pcsrcE != 2'b00);
+    assign flushD = (pcsrcE != 2'b00) || jalD;
     
     
 endmodule
