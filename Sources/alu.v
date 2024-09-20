@@ -11,12 +11,12 @@
 //`define SRL 3'b111
 
 module alu(A, B, Result, ALUControl, ALU_branch);
-    input [31:0] A,B;
-    output [31:0] Result;
+    input signed [31:0] A,B;
+    output signed [31:0] Result;
     input [3:0] ALUControl;
 
     output ALU_branch;
-    wire[31:0] Sum;
+    wire signed [31:0] Sum;
     wire Cout;
     assign {Cout, Sum} =  (ALUControl[0] == 1'b0) ? A + B : (A - B);
     assign Result = (ALUControl == 4'b0000) ? Sum:     //addition
@@ -35,7 +35,7 @@ module alu(A, B, Result, ALUControl, ALU_branch);
                     (ALUControl == 4'b1010) ? A < B:                    //bltu
                     (ALUControl == 4'b1011) ? A >= B:                   //bgeu
                     (ALUControl == 4'b1100) ? A == B:                    //beq
-                    (ALUControl == 4'b1101) ? A != B:0;               //bne
+                    (ALUControl == 4'b1101) ? A != B: 1'b0;               //bne
 
     
     
