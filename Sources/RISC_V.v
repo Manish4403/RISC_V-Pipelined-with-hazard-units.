@@ -1,27 +1,21 @@
 `timescale 1ns/1ps
 
-module RISC_V(clk, rst, resultW);
+module RISC_V(clk, rst);
             
-
+//clk_wiz_0 instance_name
+//   (
+//    // Clock out ports
+//    .clk(clk_out),     // output clk
+//    // Status and control signals
+//    .reset(reset), // input reset
+//    .locked(locked),       // output locked
+//   // Clock in ports
+//    .clk_in1(clk_in1)      // input clk_in1
+//);
+//    assign clk_in1 = clk;
+//    assign reset = rst;
     
     input clk, rst;
-            // input[31:0] inst; // user's input instruction.
-//    wire RegwriteE, MemwriteE, alusrcE,
-//                RegwriteM, MemwriteM,
-//                RegwriteW;
-//    wire [31:0] srcA, srcB,  resultWD_mux;
-//    wire [2:0] ResultSrcE, LoadSrcE,
-//           ResultSrcM, LoadSrcM,
-//           ResultSrcW, LoadSrcW;
-           
-//    wire [1:0]  StoreSrcE;
-//    wire [3:0]  AluControlSrcE;
-            
-//Datapath wires (Pipeline)
-//    wire [4:0]  Rs1D, Rs2D, RdD, 
-//            Rs1E, Rs2E, RdE,
-//            RdM,
-//            RdW;
             
             
     wire [2:0] LoadSrcD, ResultSrcD;
@@ -30,20 +24,27 @@ module RISC_V(clk, rst, resultW);
     wire [1:0] pcsrc,StoreSrcD;
     wire [6:0] op;
     wire MemwriteD, alusrcD, RegwriteD, funct7, ALU_branch;
-    output [31:0] resultW;
-//    wire [31:0] mem_loc, reg_loc;
+    wire jalD, jalrD, loadD, storeD,
+         jalE, jalrE,loadE, storeE;
     
     RISC_DATAPATH DATAPATH(clk, rst, pcsrc, MemwriteD, 
                      AluControlSrcD, alusrcD, ImmsrcD, RegwriteD,
-                     ALU_branch, op, funct3, funct7,
+                     ALU_branch, op, funct3, funct7,jalD, jalrD, loadD, 
+                     storeD,
                      //only for output
-                    resultW,LoadSrcD, ResultSrcD,
-                    pcsrc, StoreSrcD);
+                    LoadSrcD, ResultSrcD,
+                    pcsrc, StoreSrcD, jalE, jalrE, 
+                    loadE, storeE);
 
     
-    Controller Contro_Unit(.clk(clk), .rst(rst), .op(op), .funct3(funct3), .funct7(funct7), .branch(ALU_branch), .pcsrc(pcsrc), .resultsrc(ResultSrcD), 
+    Controller Contro_Unit(.clk(clk), .rst(rst), .op(op), .funct3(funct3), .funct7(funct7), 
+                        .pcsrc(pcsrc), .resultsrc(ResultSrcD), 
                         .memwrite(MemwriteD), .alucontrol(AluControlSrcD), .alusrc(alusrcD),
-                         .immsrc(ImmsrcD), .regwrite(RegwriteD), .load_src(LoadSrcD), .store_src(StoreSrcD));
+                        .immsrc(ImmsrcD), .regwrite(RegwriteD), .load_src(LoadSrcD), .store_src(StoreSrcD), 
+                        
+                        .jalD(jalD), .jalrD(jalrD), .loadD(loadD), 
+                        .storeD(storeD), .jalE(jalE), .jalrE(jalrE), .loadE(loadE), 
+                        .storeE(storeE), .branch(ALU_branch));
     
      
 endmodule
