@@ -28,15 +28,15 @@ module RegEX_MM(clk, rst,regwriteE, memwriteE,rdE,aluresultE, writeDataE, auipcE
                  );
     input clk, rst;
     input regwriteE, memwriteE;
-    input [2:0] resultsrcE, loadsrcE;
-    input [4:0] rdE;
-    input [31:0] aluresultE, writeDataE, auipcE,
+    input signed [2:0] resultsrcE, loadsrcE;
+    input signed [4:0] rdE;
+    input signed [31:0] aluresultE, writeDataE, auipcE,
                  immextE, pcplus4E; 
     
     output reg regwriteM, memwriteM;
-    output reg [2:0] resultsrcM, loadsrcM;
-    output reg [4:0] rdM;
-    output reg [31:0] aluresultM, writeDataM, auipcM,
+    output reg signed [2:0] resultsrcM, loadsrcM;
+    output reg signed [4:0] rdM;
+    output reg signed [31:0] aluresultM, writeDataM, auipcM,
                  immextM, pcplus4M;
                  
      always@(posedge clk) begin
