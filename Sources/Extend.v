@@ -13,7 +13,7 @@
 module Extend(ImmSrc, ImmExt, data);
     input [2:0] ImmSrc;
     input [24:0] data;
-    output reg[31:0] ImmExt;
+    output reg signed [31:0] ImmExt;
     
     always@(data or ImmSrc)begin
         case(ImmSrc)
