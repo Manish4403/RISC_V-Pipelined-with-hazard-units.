@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 
 module RegIF_ID(instrF, PCF, PCplus4F, clk, rst,clr, en,instrD,PCD,PCPlus4D);
-    input [31:0] instrF, PCF, PCplus4F;
+    input signed [31:0] instrF, PCF, PCplus4F;
     input clk,rst,en,clr;
-    output reg [31:0] instrD,PCD,PCPlus4D;
+    output reg signed [31:0] instrD,PCD,PCPlus4D;
     
     reg[31:0] inst, pc, pclus4;
     
