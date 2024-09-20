@@ -3,9 +3,9 @@
 
 
 module mux8to1_result(result, sel, in0, in1, in2, in3, in4, in5, in6, in7);
-    input [31:0] in0, in1, in2, in3, in4, in5, in6, in7;
+    input signed [31:0] in0, in1, in2, in3, in4, in5, in6, in7;
     input [2:0] sel;
-    output reg [31:0] result;
+    output reg signed [31:0] result;
     
     always@ (*) begin
         case(sel)
