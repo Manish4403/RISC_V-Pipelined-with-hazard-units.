@@ -22,7 +22,7 @@ module Main_decoder(op, resultsrc, memwrite, alusrc, immsrc, regwrite, jal, jalr
     output reg memwrite, alusrc, jal, jalr, regwrite,load,store;
     
     always@(op or funct3 or funct7)begin
-        {memwrite, alusrc, jal, jalr, regwrite,resultsrc, aluop,immsrc,load,store} = 15'b0;
+        {memwrite, alusrc, jal, jalr, regwrite,resultsrc, aluop,immsrc,load,store} = 16'b0;
         case(op)
             `R_T: begin
                    aluop = 2'b10;
