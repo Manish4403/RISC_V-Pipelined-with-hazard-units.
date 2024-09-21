@@ -9,3 +9,4 @@ $\textbf{The result took 123 clock cycles in contrast to multicycle design which
 ![Screenshot 2024-09-20 201118](https://github.com/user-attachments/assets/37cfc0ff-8dca-4043-ab4e-26e09462660b)
 ![Timing](https://github.com/user-attachments/assets/a76fdbfb-138f-48de-ab89-da24cba57105)
 ![Screenshot 2024-09-21 104246](https://github.com/user-attachments/assets/27131874-ac4b-4305-af4e-94a3992b5856)
+![Screenshot 2024-09-21 104447](https://github.com/user-attachments/assets/cff08bfd-fb15-4e8a-9251-0d10dc8b568a)
